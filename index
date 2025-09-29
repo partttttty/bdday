@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Franek urodzinki</title>
+  <style>
+    :root{
+      --bg:#160826;
+      --panel:#2b1736;
+      --accent:#8b5cf6;
+      --accent-2:#6d28d9;
+      --highlight:#f3e8ff;
+      --card:#321b49;
+      --shadow: 0 10px 30px rgba(9,7,20,0.6);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    html,body{height:100%;margin:0;background:radial-gradient(circle at 10% 10%, #241236 0%, var(--bg) 40%);color:var(--highlight);overflow:hidden}
+    .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;position:relative}
+
+    .console{
+      width:1000px;
+      max-width:95vw;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:18px;
+      padding:26px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+
+    .reflector{position:fixed;top:0;bottom:0;width:160px;pointer-events:none;z-index:0}
+    .reflector.left{left:0;transform:skewY(5deg) rotate(-5deg)}
+    .reflector.right{right:0;transform:skewY(-5deg) rotate(5deg)}
+    .beam{position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(180deg, rgba(139,92,246,0.06), rgba(139,92,246,0.0));mix-blend-mode:screen;animation:beamMove 6s linear infinite}
+    .beam::before{content:"";position:absolute;left:20%;right:20%;top:10%;bottom:40%;background:linear-gradient(180deg, rgba(139,92,246,0.45), rgba(109,40,217,0.05));filter:blur(18px);transform-origin:center;animation:beamPulse 2.8s ease-in-out infinite}
+    @keyframes beamMove{0%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}100%{transform:translateY(0) rotate(-3deg)}}
+    @keyframes beamPulse{0%{opacity:0.6}50%{opacity:1;transform:scale(1.02)}100%{opacity:0.6}}
+
+    .top{display:flex;align-items:center;gap:16px;margin-bottom:18px;z-index:1;position:relative}
+    .logo{width:68px;height:68px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:24px}
+    h1{margin:0;font-size:20px}
+    p.sub{margin:0;color:rgba(255,255,255,0.65);font-size:13px}
+
+    .deck{display:flex;gap:18px}
+
+    .turntable{flex:1;background:linear-gradient(180deg,#362140 0%, #241233 100%);border-radius:12px;padding:18px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.6);position:relative}
+    .platter{height:220px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.25) 100%);display:flex;align-items:center;justify-content:center;margin:auto}
+    .record{width:170px;height:170px;border-radius:50%;background:conic-gradient(from 120deg, rgba(0,0,0,0.7) 0% 10%, rgba(255,255,255,0.02) 10% 12%);box-shadow:inset 0 6px 20px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;transition:transform 0.15s linear}
+    .label{width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+    .record.playing{animation:spin 4s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .controls{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:12px;flex-wrap:wrap}
+    .btn{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.06));padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);cursor:pointer;font-weight:700;color:var(--highlight)}
+
+    .slider{appearance:none;width:100px;height:6px;background:#444;border-radius:6px;outline:none;margin:4px 0}
+    .slider::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent)}
+
+    /* Performance pads */
+    .pads {
+      display: grid;
+      grid-template-columns: repeat(4, 42px);
+      gap: 6px;
+      margin: 12px auto 0;
+      justify-content: center;
+    }
+
+    .pad {
+      width: 42px;
+      height: 42px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(139,92,246,0.5);
+      transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
+    }
+
+    /* purplish neon palette */
+    .pad:nth-child(1) { background:#a855f7; box-shadow:0 0 12px #a855f7; }
+    .pad:nth-child(2) { background:#9333ea; box-shadow:0 0 12px #9333ea; }
+    .pad:nth-child(3) { background:#c084fc; box-shadow:0 0 12px #c084fc; }
+    .pad:nth-child(4) { background:#7c3aed; box-shadow:0 0 12px #7c3aed; }
+    .pad:nth-child(5) { background:#d946ef; box-shadow:0 0 12px #d946ef; }
+    .pad:nth-child(6) { background:#8b5cf6; box-shadow:0 0 12px #8b5cf6; }
+    .pad:nth-child(7) { background:#6366f1; box-shadow:0 0 12px #6366f1; }
+    .pad:nth-child(8) { background:#4f46e5; box-shadow:0 0 12px #4f46e5; }
+
+    .pad:active {
+      transform: scale(0.9);
+      filter: brightness(1.3);
+      box-shadow: 0 0 18px #fff;
+    }
+
+
+    .fader{width:80%;height:8px;background:rgba(255,255,255,0.04);border-radius:8px;position:relative}
+    .knob{width:18px;height:18px;border-radius:50%;background:var(--accent);position:absolute;top:-5px;left:0;cursor:pointer}
+    .screen{width:92%;background:linear-gradient(180deg,#0f0720,#1b0b2b);border-radius:8px;padding:8px;color:#ddd;font-size:13px;text-align:center}
+
+    .mixer {
+      width:340px;
+      background:linear-gradient(180deg,#2b1b3a 0%, #1b0f22 100%);
+      border-radius:12px;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+    }
+
+    .spotify-screen {width:100%;height:152px;border-radius:12px;overflow:hidden;position:relative;background:#0f0720;border:1px solid rgba(139,92,246,0.6)}
+    .spotify-screen iframe {width:100%;height:100%;border:none;border-radius:10px}
+
+    @media (max-width:980px){
+      .deck{flex-direction:column}
+      .mixer{order:-1;width:100%}
+    }
+
+    .extra-controls {
+      width: 100%;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .knobs {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .knob-control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+    }
+
+    .knob-range {
+      appearance: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #2b1b3a, #1b0f22);
+      border: 2px solid rgba(139,92,246,0.5);
+      cursor: pointer;
+      transform: rotate(-90deg); /* make it vertical like a knob */
+    }
+
+    .knob-range::-webkit-slider-thumb {
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #c084fc;
+      box-shadow: 0 0 6px #c084fc;
+    }
+
+    .fx-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .fx-btn {
+      background: linear-gradient(180deg, rgba(139,92,246,0.3), rgba(109,40,217,0.2));
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #f3e8ff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .fx-btn:hover {
+      background: rgba(139,92,246,0.6);
+      box-shadow: 0 0 10px rgba(139,92,246,0.8);
+    }
+    .birthday-title {
+      font-size: 28px;
+      font-weight: 800;
+      text-align: center;
+      width: 100%; /* force it to take full width */
+      background: linear-gradient(90deg, #d946ef, #8b5cf6, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 8px rgba(139,92,246,0.8), 0 0 16px rgba(217,70,239,0.5);
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 8px rgba(139,92,246,0.8), 0 0 16px rgba(217,70,239,0.5); }
+      50% { text-shadow: 0 0 14px rgba(139,92,246,1), 0 0 28px rgba(217,70,239,0.9); }
+    }
+
+
+
+    .sticker{position:absolute;right:20px;top:20px;background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:8px;font-weight:800;font-size:12px;color:var(--highlight)}
+  </style>
+</head>
+<body>
+<div class="reflector left"><div class="beam"></div></div>
+<div class="reflector right"><div class="beam"></div></div>
+
+<div class="stage">
+  <div class="console" id="console">
+    <div class="top">
+      <h1 class="birthday-title">Franio's Birthday Set 🎧</h1>
+    </div>
+
+
+    <div class="deck">
+      <!-- Left Deck -->
+      <div class="turntable" id="leftDeck">
+        <div class="platter">
+          <div class="record" id="leftRecord">
+            <div class="label">A</div>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="leftPlay">Play</button>
+          <button class="btn" id="leftSpinFast">Faster</button>
+          <input type="range" class="slider" min="0" max="100" value="50">
+          <input type="range" class="slider" min="-50" max="50" value="0">
+        </div>
+        <div class="pads" id="leftPads"></div>
+      </div>
+
+      <!-- Mixer -->
+      <div class="mixer">
+        <div class="screen">Now playing: <strong id="nowPlaying">Playlist</strong></div>
+        <div class="fader" id="crossfader">
+          <div class="knob" id="knob"></div>
+        </div>
+        <div class="spotify-screen">
+          <iframe id="spotifyEmbed"></iframe>
+        </div>
+        <!-- NEW: Volume + FX controls -->
+        <div class="extra-controls">
+          <div class="knobs">
+            <div class="knob-control">
+              <label>Bass</label>
+              <input type="range" min="0" max="100" value="50" class="knob-range">
+            </div>
+            <div class="knob-control">
+              <label>Mid</label>
+              <input type="range" min="0" max="100" value="50" class="knob-range">
+            </div>
+            <div class="knob-control">
+              <label>Treble</label>
+              <input type="range" min="0" max="100" value="50" class="knob-range">
+            </div>
+            <div class="knob-control">
+              <label>Vol</label>
+              <input type="range" min="0" max="100" value="70" class="knob-range">
+            </div>
+          </div>
+          <div class="fx-buttons">
+            <button class="fx-btn">Mute</button>
+            <button class="fx-btn">FX</button>
+            <button class="fx-btn">Reset</button>
+          </div>
+        </div>
+
+        <div style="width:92%;display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <button class="btn" id="prevPlaylist">⟵ Prev Playlist</button>
+          <button class="btn" id="nextPlaylist">Next Playlist ⟶</button>
+        </div>
+      </div>
+
+      <!-- Right Deck -->
+      <div class="turntable" id="rightDeck">
+        <div class="platter">
+          <div class="record" id="rightRecord">
+            <div class="label">B</div>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="rightPlay">Play</button>
+          <button class="btn" id="rightSpinFast">Faster</button>
+          <input type="range" class="slider" min="0" max="100" value="50">
+          <input type="range" class="slider" min="-50" max="50" value="0">
+        </div>
+        <div class="pads" id="rightPads"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  const spotifyPlaylists = [
+    { name: "odcinkowy pomiar prędkości", url: "https://open.spotify.com/playlist/4alC8SyrcfA1UwahiOqvJL?si=02dfb2421d2a4c18" },
+    { name: "ADHD", url: "https://open.spotify.com/playlist/6ahwvc9XoueWqnvhrpFida?si=e8c24419e5fc4589" },
+    { name: "💆‍♀️", url: "https://open.spotify.com/playlist/4XMzgnG6dXpKPjMOjO8skR?si=b9999ff776d94f18" },
+    { name: "🙇‍♀️", url: "https://open.spotify.com/playlist/2jWRS0tH1LRvQhuItfu8na?si=61eee31431c14d8b" },
+    { name: "feb", url: "https://open.spotify.com/playlist/3lkeaeAct0SikkjsZPDfkA?si=6225b4a895ac4723" },
+  ];
+
+  function toEmbed(url){try{const u=new URL(url);const parts=u.pathname.split('/');if(parts.length>=3&&(parts[1]==='playlist'||parts[1]==='album')){return `https://open.spotify.com/embed/${parts[1]}/${parts[2]}?utm_source=generator`;}}catch(e){}return '';}
+  const spotifyEmbed=document.getElementById('spotifyEmbed');
+  const nowPlaying=document.getElementById('nowPlaying');
+  const nextPL=document.getElementById('nextPlaylist');
+  const prevPL=document.getElementById('prevPlaylist');
+  let currentPLIndex=0;
+  function loadPlaylist(i) {
+    currentPLIndex = (i + spotifyPlaylists.length) % spotifyPlaylists.length;
+    const pl = spotifyPlaylists[currentPLIndex];
+    const emb = toEmbed(pl.url);
+    if (emb) spotifyEmbed.src = emb;
+    nowPlaying.textContent = pl.name; // show the actual name
+  }
+  nextPL.onclick=()=>{loadPlaylist(currentPLIndex+1);}
+  prevPL.onclick=()=>{loadPlaylist((currentPLIndex-1+spotifyPlaylists.length)%spotifyPlaylists.length);}
+  if(spotifyPlaylists.length>0){loadPlaylist(0);}
+
+  const leftRecord=document.getElementById('leftRecord');
+  const rightRecord=document.getElementById('rightRecord');
+  const leftPlay=document.getElementById('leftPlay');
+  const rightPlay=document.getElementById('rightPlay');
+  const leftSpinFast=document.getElementById('leftSpinFast');
+  const rightSpinFast=document.getElementById('rightSpinFast');
+
+  function togglePlay(recordEl,btn){const is=recordEl.classList.toggle('playing');btn.textContent=is?'Pause':'Play';}
+  leftPlay.onclick=()=>{togglePlay(leftRecord,leftPlay);}
+  rightPlay.onclick=()=>{togglePlay(rightRecord,rightPlay);}
+  leftSpinFast.onclick=()=>{leftRecord.style.animationDuration='2s';setTimeout(()=>leftRecord.style.animationDuration='4s',2500);}
+  rightSpinFast.onclick=()=>{rightRecord.style.animationDuration='2s';setTimeout(()=>rightRecord.style.animationDuration='4s',2500);}
+
+  // Crossfader
+  const knob=document.getElementById('knob');const fader=document.getElementById('crossfader');let dragging=false;
+  knob.onmousedown=()=>dragging=true;window.onmouseup=()=>dragging=false;
+  window.onmousemove=e=>{if(!dragging)return;const rect=fader.getBoundingClientRect();let x=Math.min(rect.width-18,Math.max(0,e.clientX-rect.left-9));knob.style.left=x+'px';const p=x/(rect.width-18);leftRecord.style.opacity=1-p*0.6;rightRecord.style.opacity=0.4+p*0.6;};
+
+  // Pads with effects
+  function createPads(deckId,recordEl){
+    const padContainer=document.getElementById(deckId+"Pads");
+    const effects=[
+      ()=>{recordEl.animate([{transform:"scale(1)"},{transform:"scale(1.3)"},{transform:"scale(1)"}],{duration:500});},
+      ()=>{recordEl.style.animation='glitch 0.3s';setTimeout(()=>recordEl.style.animation='spin 4s linear infinite',300);},
+      ()=>{recordEl.style.transform='rotate(0deg)';recordEl.dataset.rotation=0;},
+      ()=>{recordEl.style.animation='spinback 0.5s linear 1';setTimeout(()=>recordEl.style.animation='spin 4s linear infinite',500);},
+      ()=>{recordEl.style.filter='hue-rotate(180deg)';setTimeout(()=>recordEl.style.filter='',1200);},
+      ()=>{recordEl.animate([{boxShadow:"0 0 0px #fff"},{boxShadow:"0 0 25px #fff"},{boxShadow:"0 0 0px #fff"}],{duration:1000});},
+      ()=>{recordEl.style.animationDuration='8s';setTimeout(()=>recordEl.style.animationDuration='4s',3000);},
+      ()=>{confetti();}
+    ];
+    for(let i=0;i<8;i++){const pad=document.createElement('div');pad.className='pad';pad.onclick=effects[i];padContainer.appendChild(pad);}
+  }
+  createPads('left',leftRecord);createPads('right',rightRecord);
+
+  // Animations
+  const style=document.createElement('style');style.textContent=`
+    @keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}100%{transform:translate(0)}}
+    @keyframes spinback{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+  `;document.head.appendChild(style);
+
+  // Confetti
+  function confetti(){for(let i=0;i<20;i++){const div=document.createElement('div');div.textContent='🎉';div.style.position='fixed';div.style.left=(Math.random()*100)+'%';div.style.top='-20px';div.style.fontSize=(12+Math.random()*16)+'px';div.style.zIndex=9999;document.body.appendChild(div);const endY=window.innerHeight+40;div.animate([{transform:`translateY(0)`},{transform:`translateY(${endY}px) rotate(${Math.random()*360}deg)`}],{duration:3000+Math.random()*2000});setTimeout(()=>div.remove(),5000);}}
+
+  document.querySelectorAll('.knob-range').forEach(knob=>{
+    knob.addEventListener('input', e=>{
+      console.log(knob.previousElementSibling.textContent, e.target.value);
+      // Example: change record brightness with Vol knob
+      if(knob.previousElementSibling.textContent === "Vol"){
+        leftRecord.style.opacity = e.target.value/100;
+        rightRecord.style.opacity = e.target.value/100;
+      }
+    });
+  });
+
+  document.querySelectorAll('.fx-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.textContent === "Mute"){
+        leftRecord.style.opacity = 0.2;
+        rightRecord.style.opacity = 0.2;
+      }
+      if(btn.textContent === "FX"){
+        leftRecord.style.filter = "hue-rotate(180deg)";
+        rightRecord.style.filter = "hue-rotate(180deg)";
+        setTimeout(()=>{leftRecord.style.filter="";rightRecord.style.filter="";},1000);
+      }
+      if(btn.textContent === "Reset"){
+        leftRecord.style.opacity = 1;
+        rightRecord.style.opacity = 1;
+      }
+    });
+  });
+
+
+</script>
+</body>
+</html>
